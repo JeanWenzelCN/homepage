@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin — Creative Portfolio</title>
+  <meta name="robots" content="noindex,nofollow">
+  <link rel="stylesheet" href="/css/admin.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+  <!-- LOGIN VIEW -->
+  <div id="login-view" class="login-wrap">
+    <div class="login-card">
+      <h1>Admin</h1>
+      <p class="login-sub">Creative Portfolio CMS</p>
+      <input type="password" id="login-key" placeholder="Admin Key" autocomplete="current-password">
+      <button id="login-btn">Sign In</button>
+      <p id="login-error" class="login-error"></p>
+    </div>
+  </div>
+
+  <!-- ADMIN VIEW -->
+  <div id="admin-view" class="admin-wrap" style="display:none">
+    <header class="admin-header">
+      <h1>Site Admin</h1>
+      <div class="admin-actions">
+        <a href="/" target="_blank" class="btn btn-ghost">View Site</a>
+        <button id="save-btn" class="btn btn-primary">Save All</button>
+      </div>
+    </header>
+
+    <div id="save-status" class="save-status"></div>
+
+    <div class="admin-tabs">
+      <button class="tab-btn active" data-tab="site">Site</button>
+      <button class="tab-btn" data-tab="hero">Hero</button>
+      <button class="tab-btn" data-tab="nav">Navigation</button>
+      <button class="tab-btn" data-tab="sections">Sections</button>
+      <button class="tab-btn" data-tab="works">Works</button>
+      <button class="tab-btn" data-tab="footer">Footer</button>
+      <button class="tab-btn" data-tab="json">Raw JSON</button>
+    </div>
+
+    <!-- SITE TAB -->
+    <div class="tab-panel active" id="tab-site">
+      <div class="field"><label>Brand Name (nav)</label><input data-path="site.brand"></div>
+      <div class="field"><label>Page Title</label><input data-path="site.title"></div>
+      <div class="field"><label>Meta Description</label><input data-path="site.description"></div>
+    </div>
+
+    <!-- HERO TAB -->
+    <div class="tab-panel" id="tab-hero">
+      <div class="field"><label>Name (large heading)</label><input data-path="hero.name"></div>
+      <div class="field"><label>Tagline</label><input data-path="hero.tagline"></div>
+      <div class="field"><label>Sub line</label><input data-path="hero.sub"></div>
+      <div class="field"><label>Background Image URL</label><input data-path="hero.bgImage" placeholder="https://..."></div>
+    </div>
+
+    <!-- NAV TAB -->
+    <div class="tab-panel" id="tab-nav">
+      <div class="list-editor" id="nav-editor"></div>
+      <button class="btn btn-ghost" id="nav-add">+ Add Nav Item</button>
+    </div>
+
+    <!-- SECTIONS TAB -->
+    <div class="tab-panel" id="tab-sections">
+      <div class="list-editor" id="sections-editor"></div>
+      <button class="btn btn-ghost" id="sections-add">+ Add Section</button>
+    </div>
+
+    <!-- WORKS TAB -->
+    <div class="tab-panel" id="tab-works">
+      <div class="list-editor" id="works-editor"></div>
+      <button class="btn btn-ghost" id="works-add">+ Add Work</button>
+    </div>
+
+    <!-- FOOTER TAB -->
+    <div class="tab-panel" id="tab-footer">
+      <div class="list-editor" id="footer-editor"></div>
+      <button class="btn btn-ghost" id="footer-add">+ Add Footer Column</button>
+      <div class="field" style="margin-top:2rem"><label>Footer Copyright Line</label><input data-path="footerCopy"></div>
+    </div>
+
+    <!-- RAW JSON TAB -->
+    <div class="tab-panel" id="tab-json">
+      <p class="hint">Advanced: edit the full configuration JSON directly. Click "Apply JSON" to load it into the form fields.</p>
+      <textarea id="json-editor" spellcheck="false"></textarea>
+      <button class="btn btn-ghost" id="json-apply">Apply JSON</button>
+      <p id="json-error" class="login-error"></p>
+    </div>
+  </div>
+
+  <script src="/js/admin.js"></script>
+</body>
+</html>

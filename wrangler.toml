@@ -1,0 +1,7 @@
+name = "homepage"
+compatibility_date = "2024-09-25"
+pages_build_output_dir = "public"
+
+[[kv_namespaces]]
+binding = "HOMEPAGE_KV"
+id = "auto-configured-on-first-deploy"
