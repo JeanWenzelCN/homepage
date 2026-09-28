@@ -1,81 +1,76 @@
-# Homepage
+# 个人主页（Homepage）
 
-Dark, minimal, gallery-style portfolio site (inspired by christopherirelandcreative.com), deployable on **Cloudflare Pages** with **KV-backed content** editable via a built-in admin panel.
+暗色、极简、画廊式的作品集网站（风格参考 christopherirelandcreative.com），部署在 **Cloudflare Pages** 上，内容存储于 **KV**，可通过内置管理后台编辑。
 
-## Stack
+## 技术栈
 
-- Static front-end in `public/` (no build step)
-- Cloudflare Pages Functions in `functions/api/` provide `/api/config`
-- Cloudflare KV (`HOMEPAGE_KV`) stores the whole site config as one JSON document
-- Admin key lives in a Cloudflare environment variable (`ADMIN_KEY`) — never in the repo
+- 静态前端位于 `public/`（无构建步骤）
+- `functions/api/` 中的 Cloudflare Pages Functions 提供 `/api/config`
+- Cloudflare KV（`HOMEPAGE_KV`）将整站配置存为一份 JSON 文档
+- 管理员密钥存放在 Cloudflare 环境变量（`ADMIN_KEY`）中，绝不进入代码仓库
 
-## Structure
+## 目录结构
 
 ```
 ├── wrangler.toml
 ├── public/
-│   ├── index.html      # public site
-│   ├── admin.html      # admin panel (/admin.html)
+│   ├── index.html      # 前台页面
+│   ├── admin.html      # 管理后台（/admin.html）
 │   ├── css/{main,admin}.css
 │   └── js/{main,admin}.js
 └── functions/
-    └── api/config.js   # GET/PUT /api/config, Bearer auth, KV read/write
+    └── api/config.js   # GET/PUT /api/config，Bearer 鉴权，KV 读写
 ```
 
-## API
+## 接口说明
 
-| Method | Path | Auth | Description |
+| 方法 | 路径 | 鉴权 | 说明 |
 |---|---|---|---|
-| GET | `/api/config` | none (optional Bearer probe) | Returns site config; falls back to built-in defaults when KV is empty |
-| PUT | `/api/config` | `Authorization: Bearer <ADMIN_KEY>` | Validates JSON body, writes it to KV |
+| GET | `/api/config` | 无（可用 Bearer 探测校验密钥） | 返回站点配置；KV 为空时回退到内置默认值 |
+| PUT | `/api/config` | `Authorization: Bearer <ADMIN_KEY>` | 校验 JSON 请求体后写入 KV |
 
-## Deploy
+## 部署
 
-### Option A — Git integration (recommended)
+### 方案 A — Git 集成（推荐）
 
-1. Push this repo to GitHub.
-2. In the Cloudflare dashboard: **Workers & Pages → Create → Pages → Connect to Git**, pick the repo.
-   - Build command: *(empty)*
-   - Build output directory: `public`
-3. Create the KV namespace:
+1. 将本仓库推送到 GitHub。
+2. 在 Cloudflare 控制台：**Workers & Pages → Create → Pages → Connect to Git**，选择该仓库。
+   - Build command：留空
+   - Build output directory：`public`
+3. 创建 KV 命名空间：
    ```sh
    wrangler kv namespace create HOMEPAGE_KV
    ```
-   Copy the returned `id` into `wrangler.toml`:
+   将返回的 `id` 填入 `wrangler.toml`：
    ```toml
    [[kv_namespaces]]
    binding = "HOMEPAGE_KV"
    id = "<your-kv-namespace-id>"
    ```
-   (or bind it in the dashboard: **Settings → Functions → KV namespace bindings**)
-4. Set the admin secret: **Settings → Environment variables → Add variable**:
-   - Name: `ADMIN_KEY`
-   - Value: a long random string (e.g. `openssl rand -hex 32`)
-5. Deploy. The site will serve defaults until you save content from the admin panel.
+   （也可以直接在控制台绑定：**Settings → Functions → KV namespace bindings**）
+4. 设置管理员密钥：**Settings → Environment variables → Add variable**
+   - 名称：`ADMIN_KEY`
+   - 值：一段较长的随机字符串（例如 `openssl rand -hex 32`）
+5. 部署。在你从管理后台保存内容之前，站点会显示默认配置。
 
-### Option B — Wrangler CLI
+### 方案 B — Wrangler CLI
 
 ```sh
 npm i -g wrangler
 wrangler login
 wrangler kv namespace create HOMEPAGE_KV
-# put the id into wrangler.toml
+# 将返回的 id 填入 wrangler.toml
 wrangler pages deploy public --project-name homepage
 wrangler pages secret put ADMIN_KEY --project-name homepage
 ```
 
-> Note: KV namespace IDs cannot be created fully automatically on first deploy;
-> creating the namespace and setting `ADMIN_KEY` are one-time manual steps
-> (dashboard or CLI). After that, everything (content, design copy, links,
-> works, footer) is editable from `/admin.html`.
+> 注意：KV 命名空间的 id 无法在首次部署时完全自动创建，创建 KV 命名空间与设置 `ADMIN_KEY` 属于一次性人工步骤（控制台或 CLI）。完成之后，所有内容（文案、链接、作品、页脚等）都可以在 `/admin.html` 中编辑。
 
-## Admin panel
+## 管理后台
 
-Open `https://<your-domain>/admin.html`, enter the `ADMIN_KEY`, edit any tab
-(Site / Hero / Navigation / Sections / Works / Footer / Raw JSON), then
-**Save All**. The key is kept in `sessionStorage` only.
+打开 `https://<你的域名>/admin.html`，输入 `ADMIN_KEY`，在任意 Tab 中编辑（Site / Hero / Navigation / Sections / Works / Footer / Raw JSON），然后点击 **Save All**。密钥仅保存在 `sessionStorage` 中。
 
-## Local development
+## 本地开发
 
 ```sh
 wrangler pages dev public --kv HOMEPAGE_KV
