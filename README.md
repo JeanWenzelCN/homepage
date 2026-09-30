@@ -17,10 +17,22 @@
 │   ├── index.html      # 前台页面
 │   ├── admin.html      # 管理后台（/admin.html）
 │   ├── css/{main,admin}.css
-│   └── js/{main,admin}.js
+│   ├── js/{main,admin}.js
+│   └── fonts/          # 自定义字体文件（.woff2/.woff/.ttf）
 └── functions/
     └── api/config.js   # GET/PUT /api/config，Bearer 鉴权，KV 读写
 ```
+
+## 外观（主题与字体）
+
+站点配置中的 `appearance` 字段控制主题与字体：
+
+- `theme`：`dark`（默认）或 `light`。前台通过 `document.documentElement[data-theme]` 应用对应 CSS 变量组，浅色主题的完整配色在 `main.css` 的 `[data-theme="light"]` 块中。
+- `fonts`：自定义字体列表 `[{ name, file }]`。`file` 为 `public/fonts/` 下的文件名（如 `MyFont.woff2`），`name` 为 CSS `font-family` 名。前台会为每项动态注入 `@font-face`。
+- 每处文本可独立选择字体（留空表示默认系统字体栈）。13 个槽位：
+  `brandFont`（导航品牌）、`navFont`（导航链接）、`heroNameFont`（首屏名字）、`heroTaglineFont`（首屏标语）、`heroSubFont`（首屏副标题）、`sectionTitleFont`（板块标题）、`sectionSubtitleFont`（板块副标题）、`sectionTextFont`（板块正文）、`workTitleFont`（作品标题）、`workDescFont`（作品描述）、`workTagFont`（作品标签）、`ctaFont`（CTA 按钮）、`footerFont`（页脚）。
+
+使用方式：把 `.woff2` / `.woff` / `.ttf` 文件放进 `public/fonts/`（该目录会随 Pages 一起发布为 `/fonts/<文件名>`），然后在管理后台「外观」Tab 中登记并逐处选择。
 
 ## 接口说明
 
@@ -68,7 +80,7 @@ wrangler pages secret put ADMIN_KEY --project-name homepage
 
 ## 管理后台
 
-打开 `https://<你的域名>/admin.html`，输入 `ADMIN_KEY`，在任意 Tab 中编辑（Site / Hero / Navigation / Sections / Works / Footer / Raw JSON），然后点击 **Save All**。密钥仅保存在 `sessionStorage` 中。
+打开 `https://<你的域名>/admin.html`，输入 `ADMIN_KEY`，在任意 Tab 中编辑（站点 / 首屏 / 导航 / 板块 / 作品 / 页脚 / 外观 / JSON），然后点击 **保存全部**。密钥仅保存在 `sessionStorage` 中。
 
 ## 本地开发
 

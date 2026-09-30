@@ -25,11 +25,11 @@
   async function init() {
     try {
       const res = await fetch(API_BASE + '/config');
-      if (!res.ok) throw new Error('Failed to load config');
+      if (!res.ok) throw new Error('配置加载失败');
       const cfg = await res.json();
       renderAll(cfg);
     } catch (err) {
-      console.error('Config load error:', err);
+      console.error('配置加载错误：', err);
       renderAll(getDefaultConfig());
     }
   }
@@ -37,133 +37,109 @@
   function getDefaultConfig() {
     return {
       site: {
-        brand: 'CREATIVE PORTFOLIO',
-        title: 'Creative Portfolio',
-        description: 'Photographer & Director - Campaigns, Documentary films, Long-form photography'
+        brand: '个人主页',
+        title: '个人主页',
+        description: '摄影师与导演 — 广告摄影、纪录片、长期摄影项目'
       },
       hero: {
-        name: 'CHRISTOPHER IRELAND',
-        tagline: 'Photographer | Director',
-        sub: 'Campaigns · Documentary films · Long-form photography',
+        name: '个人主页',
+        tagline: '摄影师 | 导演',
+        sub: '广告摄影 · 纪录片 · 长期摄影项目',
         bgImage: ''
       },
+      appearance: {
+        theme: 'dark',
+        fonts: [],
+        brandFont: '',
+        heroNameFont: '',
+        heroTaglineFont: '',
+        heroSubFont: '',
+        sectionTitleFont: '',
+        sectionSubtitleFont: '',
+        sectionTextFont: '',
+        workTitleFont: '',
+        workDescFont: '',
+        workTagFont: '',
+        navFont: '',
+        footerFont: '',
+        ctaFont: ''
+      },
       nav: [
-        { label: 'Landing', href: '#hero' },
-        { label: 'Creative Outlets', href: '#creative-outlets' },
-        { label: 'Advertising folio', href: '#works-section' },
-        { label: 'Community', href: '#community' },
-        { label: 'Enquire', href: '#enquire' },
-        { label: 'About', href: '#about' }
+        { label: '首页', href: '#hero' },
+        { label: '创作', href: '#creative' },
+        { label: '作品集', href: '#works-section' },
+        { label: '社区', href: '#community' },
+        { label: '联系', href: '#enquire' },
+        { label: '关于', href: '#about' }
       ],
-      sections: [
-        {
-          id: 'about',
-          title: 'About',
-          subtitle: 'Photographer & Director',
-          text: 'Christopher Ireland is a photographer and director based in Sydney, Australia. With over two decades of experience, he creates compelling visual narratives for brands, publications, and communities worldwide.',
-          layout: 'text',
-          image: ''
-        },
-        {
-          id: 'commercial',
-          title: 'Commercial',
-          subtitle: 'Advertising Campaigns',
-          text: 'From global brands to local startups, Christopher brings a cinematic eye to every commercial project. His work spans photography billboards, television commercials, and digital campaigns.',
-          layout: 'text',
-          image: ''
-        },
-        {
-          id: 'creative',
-          title: 'Creative',
-          subtitle: 'Artistry & Ideas',
-          text: 'Beyond commissioned work, Christopher pursues personal creative projects that explore the boundaries of visual storytelling. These long-form photographic series and short films are exhibited internationally.',
-          layout: 'text',
-          image: ''
-        },
-        {
-          id: 'community',
-          title: 'Community',
-          subtitle: 'Purpose & Education',
-          text: 'Christopher is committed to giving back through mentorship programs, workshops, and documentary projects that highlight underrepresented voices in the creative industry.',
-          layout: 'text',
-          image: ''
-        },
-        {
-          id: 'enquire',
-          title: 'Enquire',
-          subtitle: 'Start a Project',
-          text: 'Ready to bring your vision to life? Get in touch to discuss your next campaign, documentary, or creative collaboration.',
-          layout: 'cta',
-          image: ''
-        }
-      ],
-      works: [
-        { title: 'Photography Billboards', desc: 'Large-format outdoor advertising photography for global brands across APAC.', tag: 'Commercial', img: '' },
-        { title: 'Film Commercials', desc: 'Broadcast and digital film campaigns with cinematic storytelling.', tag: 'Commercial', img: '' },
-        { title: 'Documentary Films', desc: 'Long-form documentary projects exploring human stories and social issues.', tag: 'Creative', img: '' },
-        { title: 'Long-form Photography', desc: 'Extended photographic series capturing landscapes, cultures, and communities.', tag: 'Creative', img: '' },
-        { title: 'Education Programs', desc: 'Workshops and mentorship initiatives for emerging photographers.', tag: 'Community', img: '' },
-        { title: 'Purpose Projects', desc: 'Pro-bono creative work for non-profits and social enterprises.', tag: 'Community', img: '' }
-      ],
-      footer: [
-        {
-          title: 'Navigation',
-          links: [
-            { label: 'Landing', href: '#hero' },
-            { label: 'Creative Outlets', href: '#creative-outlets' },
-            { label: 'Advertising folio', href: '#works-section' },
-            { label: 'Community', href: '#community' },
-            { label: 'Enquire', href: '#enquire' },
-            { label: 'About', href: '#about' }
-          ]
-        },
-        {
-          title: 'Services',
-          links: [
-            { label: 'Photography Billboards', href: '#' },
-            { label: 'Film Commercials', href: '#' },
-            { label: 'Artistry & Ideas', href: '#' },
-            { label: 'Education', href: '#' },
-            { label: 'Purpose', href: '#' }
-          ]
-        },
-        {
-          title: 'Connect',
-          links: [
-            { label: 'Email', href: 'mailto:hello@example.com' },
-            { label: 'Instagram', href: '#' },
-            { label: 'LinkedIn', href: '#' },
-            { label: 'Vimeo', href: '#' }
-          ]
-        }
-      ],
-      footerCopy: '© 2025 Christopher Ireland Creative. All rights reserved.'
+      sections: [],
+      works: [],
+      footer: [],
+      footerCopy: '© 版权所有'
     };
   }
 
   function renderAll(cfg) {
+    // Apply appearance settings first
+    applyAppearance(cfg.appearance);
+    const ap = cfg.appearance || {};
+
     // Title & Meta
-    document.title = cfg.site?.title || 'Creative Portfolio';
+    document.title = cfg.site?.title || '个人主页';
     const metaDesc = document.querySelector('meta[name="description"]');
     if (metaDesc) metaDesc.content = cfg.site?.description || '';
 
     // Nav
-    renderNav(cfg);
+    renderNav(cfg, ap);
     // Hero
-    renderHero(cfg.hero);
+    renderHero(cfg.hero, ap);
     // Sections
-    renderSections(cfg.sections || []);
+    renderSections(cfg.sections || [], ap);
     // Works
-    renderWorks(cfg.works || []);
+    renderWorks(cfg.works || [], ap);
     // Footer
-    renderFooter(cfg.footer || [], cfg.footerCopy);
+    renderFooter(cfg.footer || [], cfg.footerCopy, ap);
     // Animate sections on scroll
     initScrollAnimations();
   }
 
-  function renderNav(cfg) {
+  function applyAppearance(appearance) {
+    if (!appearance) return;
+
+    // Theme
+    const theme = appearance.theme || 'dark';
+    document.documentElement.setAttribute('data-theme', theme);
+
+    // Register custom fonts from /public/fonts/
+    const fonts = appearance.fonts || [];
+    fonts.forEach(f => {
+      if (!f.name || !f.file) return;
+      const fontPath = f.file.startsWith('/') ? f.file : '/fonts/' + f.file;
+      const style = document.createElement('style');
+      style.textContent = `
+        @font-face {
+          font-family: '${f.name}';
+          src: url('${fontPath}') format('woff2'),
+               url('${fontPath}') format('woff'),
+               url('${fontPath}') format('truetype');
+          font-weight: 100 900;
+          font-display: swap;
+        }
+      `;
+      document.head.appendChild(style);
+    });
+  }
+
+  // Apply per-element font override via inline style
+  function applyFont(el, fontName) {
+    if (!el || !fontName) return;
+    el.style.fontFamily = `'${fontName}', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif`;
+  }
+
+  function renderNav(cfg, ap) {
     const brand = document.getElementById('nav-brand');
-    brand.textContent = cfg.site?.brand || 'CREATIVE PORTFOLIO';
+    brand.textContent = cfg.site?.brand || '个人主页';
+    applyFont(brand, ap?.brandFont);
 
     navLinks.innerHTML = '';
     (cfg.nav || []).forEach(item => {
@@ -171,6 +147,7 @@
       const a = document.createElement('a');
       a.href = item.href;
       a.textContent = item.label;
+      applyFont(a, ap?.navFont);
       li.appendChild(a);
       navLinks.appendChild(li);
     });
@@ -184,11 +161,17 @@
     });
   }
 
-  function renderHero(hero) {
+  function renderHero(hero, ap) {
     if (!hero) return;
-    document.getElementById('hero-name').textContent = hero.name || '';
-    document.getElementById('hero-tagline').textContent = hero.tagline || '';
-    document.getElementById('hero-sub').textContent = hero.sub || '';
+    const nameEl = document.getElementById('hero-name');
+    const tagEl = document.getElementById('hero-tagline');
+    const subEl = document.getElementById('hero-sub');
+    nameEl.textContent = hero.name || '';
+    tagEl.textContent = hero.tagline || '';
+    subEl.textContent = hero.sub || '';
+    applyFont(nameEl, ap?.heroNameFont);
+    applyFont(tagEl, ap?.heroTaglineFont);
+    applyFont(subEl, ap?.heroSubFont);
 
     const heroEl = document.getElementById('hero');
     if (hero.bgImage) {
@@ -199,7 +182,7 @@
     }
   }
 
-  function renderSections(sections) {
+  function renderSections(sections, ap) {
     const main = document.getElementById('main-content');
     main.innerHTML = '';
 
@@ -216,6 +199,7 @@
         const sub = document.createElement('p');
         sub.className = 'section-subtitle';
         sub.textContent = sec.subtitle;
+        applyFont(sub, ap?.sectionSubtitleFont);
         container.appendChild(sub);
       }
 
@@ -224,6 +208,7 @@
         const title = document.createElement('h2');
         title.className = 'section-title';
         title.textContent = sec.title;
+        applyFont(title, ap?.sectionTitleFont);
         container.appendChild(title);
       }
 
@@ -232,6 +217,7 @@
         const text = document.createElement('p');
         text.className = 'section-text';
         text.textContent = sec.text || '';
+        applyFont(text, ap?.sectionTextFont);
         container.appendChild(text);
 
         const btn = document.createElement('a');
@@ -241,9 +227,10 @@
           display:inline-block;margin-top:1.5rem;padding:14px 40px;
           border:1px solid var(--accent);color:var(--accent);
           font-size:0.8rem;font-weight:500;letter-spacing:0.15em;
-          text-transform:uppercase;transition:var(--transition);
+          transition:var(--transition);
         `;
-        btn.textContent = 'Get in Touch';
+        btn.textContent = sec.ctaText || '联系我们';
+        applyFont(btn, ap?.ctaFont);
         btn.onmouseenter = () => { btn.style.background = 'var(--accent)'; btn.style.color = '#0a0a0a'; };
         btn.onmouseleave = () => { btn.style.background = 'transparent'; btn.style.color = 'var(--accent)'; };
         container.appendChild(btn);
@@ -257,6 +244,7 @@
           <div><img src="${esc(sec.image)}" alt="${esc(sec.title)}" loading="lazy"></div>
         `;
         container.appendChild(cols);
+        applyFont(cols.querySelector('.section-text'), ap?.sectionTextFont);
       }
       // Layout: full-width image
       else if (sec.layout === 'fullimg' && sec.image) {
@@ -267,6 +255,7 @@
           <div class="overlay-text"><h3>${esc(sec.title)}</h3></div>
         `;
         container.appendChild(fullImg);
+        applyFont(fullImg.querySelector('.overlay-text h3'), ap?.sectionTitleFont);
       }
       // Default: text only
       else {
@@ -274,6 +263,7 @@
           const text = document.createElement('p');
           text.className = 'section-text';
           text.textContent = sec.text;
+          applyFont(text, ap?.sectionTextFont);
           container.appendChild(text);
         }
       }
@@ -283,7 +273,7 @@
     });
   }
 
-  function renderWorks(works) {
+  function renderWorks(works, ap) {
     const grid = document.getElementById('works-grid');
     grid.innerHTML = '';
 
@@ -309,10 +299,14 @@
         </div>
       `;
       grid.appendChild(card);
+      applyFont(card.querySelector('.work-card-title'), ap?.workTitleFont);
+      applyFont(card.querySelector('.work-card-desc'), ap?.workDescFont);
+      applyFont(card.querySelector('.work-card-tag'), ap?.workTagFont);
+      applyFont(card.querySelector('.work-card-img span'), ap?.workTitleFont);
     });
   }
 
-  function renderFooter(cols, copy) {
+  function renderFooter(cols, copy, ap) {
     const grid = document.getElementById('footer-grid');
     grid.innerHTML = '';
 
@@ -335,10 +329,14 @@
         ul.appendChild(li);
       });
       div.appendChild(ul);
+      applyFont(h4, ap?.footerFont);
+      applyFont(ul, ap?.footerFont);
       grid.appendChild(div);
     });
 
-    document.getElementById('footer-copy').textContent = copy || '';
+    const copyEl = document.getElementById('footer-copy');
+    copyEl.textContent = copy || '';
+    applyFont(copyEl, ap?.footerFont);
   }
 
   function esc(str) {

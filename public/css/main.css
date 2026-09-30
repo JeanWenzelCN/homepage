@@ -13,10 +13,31 @@
   --accent: #c8a96e;
   --accent-hover: #d4b87e;
   --border: rgba(255,255,255,0.06);
-  --font-main: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-main: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
   --nav-height: 72px;
   --container-max: 1400px;
   --transition: 0.35s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  --nav-scrolled-bg: rgba(10,10,10,0.92);
+  --nav-mobile-bg: rgba(10,10,10,0.97);
+  --overlay-color: 10,10,10;
+  --card-img-bg: #222222;
+}
+
+/* ===== 浅色主题 ===== */
+[data-theme="light"] {
+  --bg-primary: #f7f5f2;
+  --bg-secondary: #efece7;
+  --bg-card: #ffffff;
+  --text-primary: #1a1a1a;
+  --text-secondary: #555555;
+  --text-muted: #999999;
+  --accent: #a3803f;
+  --accent-hover: #8f6d2f;
+  --border: rgba(0,0,0,0.1);
+  --nav-scrolled-bg: rgba(247,245,242,0.92);
+  --nav-mobile-bg: rgba(247,245,242,0.97);
+  --overlay-color: 247,245,242;
+  --card-img-bg: #e0dcd6;
 }
 
 *, *::before, *::after {
@@ -60,7 +81,7 @@ img { max-width: 100%; display: block; }
   transition: background var(--transition), box-shadow var(--transition);
 }
 .nav.scrolled {
-  background: rgba(10,10,10,0.92);
+  background: var(--nav-scrolled-bg);
   backdrop-filter: blur(16px);
   box-shadow: 0 1px 0 var(--border);
 }
@@ -140,9 +161,9 @@ img { max-width: 100%; display: block; }
   inset: 0;
   background: linear-gradient(
     180deg,
-    rgba(10,10,10,0.5) 0%,
-    rgba(10,10,10,0.2) 40%,
-    rgba(10,10,10,0.6) 100%
+    rgba(var(--overlay-color),0.5) 0%,
+    rgba(var(--overlay-color),0.2) 40%,
+    rgba(var(--overlay-color),0.6) 100%
   );
 }
 .hero-content {
@@ -288,13 +309,16 @@ img { max-width: 100%; display: block; }
 }
 .work-card:hover {
   transform: translateY(-6px);
+  box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+}
+[data-theme="dark"] .work-card:hover {
   box-shadow: 0 20px 40px rgba(0,0,0,0.4);
 }
 .work-card-img {
   width: 100%;
   aspect-ratio: 16/10;
   object-fit: cover;
-  background: #222;
+  background: var(--card-img-bg);
 }
 .work-card-body {
   padding: 1.5rem;
@@ -386,7 +410,7 @@ img { max-width: 100%; display: block; }
     position: fixed;
     top: var(--nav-height); left: 0; right: 0;
     flex-direction: column;
-    background: rgba(10,10,10,0.97);
+    background: var(--nav-mobile-bg);
     backdrop-filter: blur(20px);
     padding: 2rem;
     gap: 1.5rem;

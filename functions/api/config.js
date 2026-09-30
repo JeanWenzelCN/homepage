@@ -5,28 +5,45 @@ const CONFIG_KEY = 'site_config';
 
 const DEFAULT_CONFIG = {
   site: {
-    brand: 'CHRISTOPHER IRELAND',
-    title: 'Christopher Ireland — Photographer | Director',
-    description: 'Campaigns, documentary films and long-form photography.'
+    brand: '个人主页',
+    title: '个人主页 — 摄影师 | 导演',
+    description: '广告摄影、纪录片与长期摄影项目。'
   },
   hero: {
-    name: 'CHRISTOPHER IRELAND',
-    tagline: 'Photographer | Director',
-    sub: 'Campaigns · Documentary films · Long-form photography',
+    name: '个人主页',
+    tagline: '摄影师 | 导演',
+    sub: '广告摄影 · 纪录片 · 长期摄影项目',
     bgImage: ''
   },
+  appearance: {
+    theme: 'dark',
+    fonts: [],
+    brandFont: '',
+    heroNameFont: '',
+    heroTaglineFont: '',
+    heroSubFont: '',
+    sectionTitleFont: '',
+    sectionSubtitleFont: '',
+    sectionTextFont: '',
+    workTitleFont: '',
+    workDescFont: '',
+    workTagFont: '',
+navFont: '',
+        footerFont: '',
+        ctaFont: ''
+      },
   nav: [
-    { label: 'Landing', href: '#hero' },
-    { label: 'Creative Outlets', href: '#creative' },
-    { label: 'Advertising folio', href: '#commercial' },
-    { label: 'Community', href: '#community' },
-    { label: 'Enquire', href: '#enquire' },
-    { label: 'About', href: '#about' }
+    { label: '首页', href: '#hero' },
+    { label: '创作', href: '#creative' },
+    { label: '作品集', href: '#works-section' },
+    { label: '社区', href: '#community' },
+    { label: '联系', href: '#enquire' },
+    { label: '关于', href: '#about' }
   ],
   sections: [],
   works: [],
   footer: [],
-  footerCopy: '© Christopher Ireland. All rights reserved.'
+  footerCopy: '© 版权所有'
 };
 
 function json(data, status = 200) {
@@ -40,7 +57,7 @@ function json(data, status = 200) {
 }
 
 function unauthorized() {
-  return json({ error: 'Unauthorized' }, 401);
+  return json({ error: '未授权访问' }, 401);
 }
 
 function isAuthorized(request, env) {
@@ -78,10 +95,10 @@ export async function onRequestPut(context) {
   try {
     body = await request.json();
   } catch (e) {
-    return json({ error: 'Invalid JSON body' }, 400);
+    return json({ error: '请求体不是合法的 JSON' }, 400);
   }
   if (!body || typeof body !== 'object' || Array.isArray(body)) {
-    return json({ error: 'Config must be a JSON object' }, 400);
+    return json({ error: '配置必须是一个 JSON 对象' }, 400);
   }
 
   await env.HOMEPAGE_KV.put(CONFIG_KEY, JSON.stringify(body));
@@ -99,5 +116,5 @@ export async function onRequest(context) {
       }
     });
   }
-  return json({ error: 'Method not allowed' }, 405);
+  return json({ error: '不支持的请求方法' }, 405);
 }

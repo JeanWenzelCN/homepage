@@ -1,97 +1,137 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="zh-CN">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Admin — Creative Portfolio</title>
-  <meta name="robots" content="noindex,nofollow">
-  <link rel="stylesheet" href="/css/admin.css">
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <meta name="robots" content="noindex, nofollow">
+  <title>后台管理 — 个人主页</title>
+  <link rel="stylesheet" href="css/admin.css">
 </head>
 <body>
 
-  <!-- LOGIN VIEW -->
-  <div id="login-view" class="login-wrap">
-    <div class="login-card">
-      <h1>Admin</h1>
-      <p class="login-sub">Creative Portfolio CMS</p>
-      <input type="password" id="login-key" placeholder="Admin Key" autocomplete="current-password">
-      <button id="login-btn">Sign In</button>
-      <p id="login-error" class="login-error"></p>
-    </div>
+  <!-- 登录视图 -->
+  <div id="login-view" class="login-card">
+    <h1>后台管理</h1>
+    <p class="login-sub">个人主页内容管理系统</p>
+    <input type="password" id="login-key" placeholder="管理员密钥" autocomplete="off">
+    <button id="login-btn">登 录</button>
+    <p id="login-error" class="error-text" hidden></p>
   </div>
 
-  <!-- ADMIN VIEW -->
-  <div id="admin-view" class="admin-wrap" style="display:none">
+  <!-- 主视图 -->
+  <div id="admin-view" hidden>
     <header class="admin-header">
-      <h1>Site Admin</h1>
-      <div class="admin-actions">
-        <a href="/" target="_blank" class="btn btn-ghost">View Site</a>
-        <button id="save-btn" class="btn btn-primary">Save All</button>
+      <h1>站点管理</h1>
+      <div class="header-actions">
+        <a href="/" target="_blank" class="btn-secondary">查看站点</a>
+        <button id="save-btn" class="btn-primary">保存全部</button>
       </div>
     </header>
+    <div id="save-status" hidden></div>
 
-    <div id="save-status" class="save-status"></div>
+    <nav class="admin-tabs">
+      <button class="tab-btn active" data-tab="site">站点</button>
+      <button class="tab-btn" data-tab="hero">首屏</button>
+      <button class="tab-btn" data-tab="nav">导航</button>
+      <button class="tab-btn" data-tab="sections">板块</button>
+      <button class="tab-btn" data-tab="works">作品</button>
+      <button class="tab-btn" data-tab="footer">页脚</button>
+      <button class="tab-btn" data-tab="appearance">外观</button>
+      <button class="tab-btn" data-tab="json">JSON</button>
+    </nav>
 
-    <div class="admin-tabs">
-      <button class="tab-btn active" data-tab="site">Site</button>
-      <button class="tab-btn" data-tab="hero">Hero</button>
-      <button class="tab-btn" data-tab="nav">Navigation</button>
-      <button class="tab-btn" data-tab="sections">Sections</button>
-      <button class="tab-btn" data-tab="works">Works</button>
-      <button class="tab-btn" data-tab="footer">Footer</button>
-      <button class="tab-btn" data-tab="json">Raw JSON</button>
-    </div>
-
-    <!-- SITE TAB -->
+    <!-- 站点 -->
     <div class="tab-panel active" id="tab-site">
-      <div class="field"><label>Brand Name (nav)</label><input data-path="site.brand"></div>
-      <div class="field"><label>Page Title</label><input data-path="site.title"></div>
-      <div class="field"><label>Meta Description</label><input data-path="site.description"></div>
+      <div class="field">
+        <label>品牌名（导航栏）</label>
+        <input type="text" data-path="site.brand">
+      </div>
+      <div class="field">
+        <label>页面标题</label>
+        <input type="text" data-path="site.title">
+      </div>
+      <div class="field">
+        <label>Meta 描述</label>
+        <input type="text" data-path="site.description">
+      </div>
     </div>
 
-    <!-- HERO TAB -->
+    <!-- 首屏 -->
     <div class="tab-panel" id="tab-hero">
-      <div class="field"><label>Name (large heading)</label><input data-path="hero.name"></div>
-      <div class="field"><label>Tagline</label><input data-path="hero.tagline"></div>
-      <div class="field"><label>Sub line</label><input data-path="hero.sub"></div>
-      <div class="field"><label>Background Image URL</label><input data-path="hero.bgImage" placeholder="https://..."></div>
+      <div class="field">
+        <label>名字</label>
+        <input type="text" data-path="hero.name">
+      </div>
+      <div class="field">
+        <label>标语</label>
+        <input type="text" data-path="hero.tagline">
+      </div>
+      <div class="field">
+        <label>副标题</label>
+        <input type="text" data-path="hero.sub">
+      </div>
+      <div class="field">
+        <label>背景图 URL</label>
+        <input type="text" data-path="hero.bgImage">
+      </div>
     </div>
 
-    <!-- NAV TAB -->
+    <!-- 导航 -->
     <div class="tab-panel" id="tab-nav">
-      <div class="list-editor" id="nav-editor"></div>
-      <button class="btn btn-ghost" id="nav-add">+ Add Nav Item</button>
+      <div id="nav-editor"></div>
+      <button id="nav-add" class="btn-secondary">＋ 添加导航项</button>
     </div>
 
-    <!-- SECTIONS TAB -->
+    <!-- 板块 -->
     <div class="tab-panel" id="tab-sections">
-      <div class="list-editor" id="sections-editor"></div>
-      <button class="btn btn-ghost" id="sections-add">+ Add Section</button>
+      <div id="sections-editor"></div>
+      <button id="sections-add" class="btn-secondary">＋ 添加板块</button>
     </div>
 
-    <!-- WORKS TAB -->
+    <!-- 作品 -->
     <div class="tab-panel" id="tab-works">
-      <div class="list-editor" id="works-editor"></div>
-      <button class="btn btn-ghost" id="works-add">+ Add Work</button>
+      <div id="works-editor"></div>
+      <button id="works-add" class="btn-secondary">＋ 添加作品</button>
     </div>
 
-    <!-- FOOTER TAB -->
+    <!-- 页脚 -->
     <div class="tab-panel" id="tab-footer">
-      <div class="list-editor" id="footer-editor"></div>
-      <button class="btn btn-ghost" id="footer-add">+ Add Footer Column</button>
-      <div class="field" style="margin-top:2rem"><label>Footer Copyright Line</label><input data-path="footerCopy"></div>
+      <div id="footer-editor"></div>
+      <button id="footer-add" class="btn-secondary">＋ 添加栏目</button>
+      <div class="field">
+        <label>版权文字</label>
+        <input type="text" data-path="footerCopy">
+      </div>
     </div>
 
-    <!-- RAW JSON TAB -->
+    <!-- 外观 -->
+    <div class="tab-panel" id="tab-appearance">
+      <div class="field">
+        <label>主题</label>
+        <select data-path="appearance.theme">
+          <option value="dark">深色</option>
+          <option value="light">浅色</option>
+        </select>
+      </div>
+
+      <h3 class="appearance-h3">自定义字体</h3>
+      <p class="hint">把字体文件（.woff2 / .woff / .ttf）放到 <code>public/fonts/</code> 目录，然后在这里登记。名称即 CSS font-family。</p>
+      <div id="fonts-editor"></div>
+      <button id="fonts-add" class="btn-secondary">＋ 添加字体</button>
+
+      <h3 class="appearance-h3">每处文本的字体</h3>
+      <p class="hint">留空表示使用默认字体。</p>
+      <div id="font-slots"></div>
+    </div>
+
+    <!-- JSON -->
     <div class="tab-panel" id="tab-json">
-      <p class="hint">Advanced: edit the full configuration JSON directly. Click "Apply JSON" to load it into the form fields.</p>
-      <textarea id="json-editor" spellcheck="false"></textarea>
-      <button class="btn btn-ghost" id="json-apply">Apply JSON</button>
-      <p id="json-error" class="login-error"></p>
+      <textarea id="json-editor" rows="20" spellcheck="false"></textarea>
+      <button id="json-apply" class="btn-secondary">应用 JSON</button>
+      <p id="json-error" class="error-text" hidden></p>
     </div>
   </div>
 
-  <script src="/js/admin.js"></script>
+  <script src="js/admin.js"></script>
 </body>
 </html>
