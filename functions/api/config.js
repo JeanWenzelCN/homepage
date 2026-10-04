@@ -16,7 +16,7 @@ const DEFAULT_CONFIG = {
     bgImage: ''
   },
   appearance: {
-    theme: 'dark',
+    theme: 'light',
     showWorks: true,
     fonts: [],
     brandFont: '',

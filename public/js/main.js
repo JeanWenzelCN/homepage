@@ -48,7 +48,7 @@
         bgImage: ''
       },
       appearance: {
-        theme: 'dark',
+        theme: 'light',
         fonts: [],
         brandFont: '',
         heroNameFont: '',
@@ -112,7 +112,7 @@
     if (!appearance) return;
 
     // Theme
-    const theme = appearance.theme || 'dark';
+    const theme = appearance.theme || 'light';
     document.documentElement.setAttribute('data-theme', theme);
 
     // Favicon with cache-busting

@@ -75,9 +75,23 @@
   }
   applyFavicon();
 
+  function applyTheme() {
+    const theme = (config && config.appearance && config.appearance.theme) || 'light';
+    document.documentElement.setAttribute('data-theme', theme);
+  }
+  applyTheme();
+
+  // 主题下拉实时预览
+  document.querySelector('select[data-path="appearance.theme"]').addEventListener('change', function () {
+    config.appearance = config.appearance || {};
+    config.appearance.theme = this.value;
+    applyTheme();
+  });
+
   function showAdmin() {
     loginView.hidden = true;
     adminView.hidden = false;
+    applyTheme();
     populateAll();
     initTabs();
   }
