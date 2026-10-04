@@ -157,18 +157,40 @@
     el.style.fontFamily = `'${fontName}', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif`;
   }
 
+  // Rich text: if the value contains HTML tags, render as inline HTML
+  // (user takes full control of styling); otherwise plain text + font slot.
+  function isHtml(str) {
+    return typeof str === 'string' && /<\/?[a-z][\s\S]*>/i.test(str);
+  }
+
+  function setRich(el, text, fontName) {
+    if (!el) return;
+    const v = text || '';
+    if (isHtml(v)) {
+      el.innerHTML = v;
+    } else {
+      el.textContent = v;
+      applyFont(el, fontName);
+    }
+  }
+
+  // For template-literal contexts (cols/fullimg/works): return raw HTML
+  // unchanged when it is HTML, otherwise escaped plain text.
+  function richHtml(str) {
+    if (!str) return '';
+    return isHtml(str) ? str : esc(str);
+  }
+
   function renderNav(cfg, ap) {
     const brand = document.getElementById('nav-brand');
-    brand.textContent = cfg.site?.brand || '个人主页';
-    applyFont(brand, ap?.brandFont);
+    setRich(brand, cfg.site?.brand || '个人主页', ap?.brandFont);
 
     navLinks.innerHTML = '';
     (cfg.nav || []).forEach(item => {
       const li = document.createElement('li');
       const a = document.createElement('a');
       a.href = item.href;
-      a.textContent = item.label;
-      applyFont(a, ap?.navFont);
+      setRich(a, item.label, ap?.navFont);
       li.appendChild(a);
       navLinks.appendChild(li);
     });
@@ -187,12 +209,9 @@
     const nameEl = document.getElementById('hero-name');
     const tagEl = document.getElementById('hero-tagline');
     const subEl = document.getElementById('hero-sub');
-    nameEl.textContent = hero.name || '';
-    tagEl.textContent = hero.tagline || '';
-    subEl.textContent = hero.sub || '';
-    applyFont(nameEl, ap?.heroNameFont);
-    applyFont(tagEl, ap?.heroTaglineFont);
-    applyFont(subEl, ap?.heroSubFont);
+    setRich(nameEl, hero.name, ap?.heroNameFont);
+    setRich(tagEl, hero.tagline, ap?.heroTaglineFont);
+    setRich(subEl, hero.sub, ap?.heroSubFont);
 
     const heroEl = document.getElementById('hero');
     if (hero.bgImage) {
@@ -219,8 +238,7 @@
       if (sec.subtitle) {
         const sub = document.createElement('p');
         sub.className = 'section-subtitle';
-        sub.textContent = sec.subtitle;
-        applyFont(sub, ap?.sectionSubtitleFont);
+        setRich(sub, sec.subtitle, ap?.sectionSubtitleFont);
         container.appendChild(sub);
       }
 
@@ -228,8 +246,7 @@
       if (sec.title) {
         const title = document.createElement('h2');
         title.className = 'section-title';
-        title.textContent = sec.title;
-        applyFont(title, ap?.sectionTitleFont);
+        setRich(title, sec.title, ap?.sectionTitleFont);
         container.appendChild(title);
       }
 
@@ -237,8 +254,7 @@
       if (sec.layout === 'cta') {
         const text = document.createElement('p');
         text.className = 'section-text';
-        text.textContent = sec.text || '';
-        applyFont(text, ap?.sectionTextFont);
+        setRich(text, sec.text, ap?.sectionTextFont);
         container.appendChild(text);
 
         const btn = document.createElement('a');
@@ -251,7 +267,8 @@
           transition:var(--transition);
         `;
         btn.textContent = sec.ctaText || '联系我们';
-        applyFont(btn, ap?.ctaFont);
+        if (isHtml(sec.ctaText)) btn.innerHTML = sec.ctaText;
+        else applyFont(btn, ap?.ctaFont);
         btn.onmouseenter = () => { btn.style.background = 'var(--accent)'; btn.style.color = '#0a0a0a'; };
         btn.onmouseleave = () => { btn.style.background = 'transparent'; btn.style.color = 'var(--accent)'; };
         container.appendChild(btn);
@@ -261,11 +278,11 @@
         const cols = document.createElement('div');
         cols.className = 'section-cols';
         cols.innerHTML = `
-          <div><p class="section-text">${esc(sec.text)}</p></div>
+          <div><p class="section-text">${richHtml(sec.text)}</p></div>
           <div><img src="${esc(sec.image)}" alt="${esc(sec.title)}" loading="lazy"></div>
         `;
         container.appendChild(cols);
-        applyFont(cols.querySelector('.section-text'), ap?.sectionTextFont);
+        if (!isHtml(sec.text)) applyFont(cols.querySelector('.section-text'), ap?.sectionTextFont);
       }
       // Layout: full-width image
       else if (sec.layout === 'fullimg' && sec.image) {
@@ -273,18 +290,17 @@
         fullImg.className = 'section-fullimg';
         fullImg.innerHTML = `
           <img src="${esc(sec.image)}" alt="${esc(sec.title)}" loading="lazy">
-          <div class="overlay-text"><h3>${esc(sec.title)}</h3></div>
+          <div class="overlay-text"><h3>${richHtml(sec.title)}</h3></div>
         `;
         container.appendChild(fullImg);
-        applyFont(fullImg.querySelector('.overlay-text h3'), ap?.sectionTitleFont);
+        if (!isHtml(sec.title)) applyFont(fullImg.querySelector('.overlay-text h3'), ap?.sectionTitleFont);
       }
       // Default: text only
       else {
         if (sec.text) {
           const text = document.createElement('p');
           text.className = 'section-text';
-          text.textContent = sec.text;
-          applyFont(text, ap?.sectionTextFont);
+          setRich(text, sec.text, ap?.sectionTextFont);
           container.appendChild(text);
         }
       }
@@ -314,15 +330,15 @@
       card.innerHTML = `
         ${imgHtml}
         <div class="work-card-body">
-          <h3 class="work-card-title">${esc(w.title)}</h3>
-          <p class="work-card-desc">${esc(w.desc)}</p>
-          ${w.tag ? `<span class="work-card-tag">${esc(w.tag)}</span>` : ''}
+          <h3 class="work-card-title">${richHtml(w.title)}</h3>
+          <p class="work-card-desc">${richHtml(w.desc)}</p>
+          ${w.tag ? `<span class="work-card-tag">${richHtml(w.tag)}</span>` : ''}
         </div>
       `;
       grid.appendChild(card);
-      applyFont(card.querySelector('.work-card-title'), ap?.workTitleFont);
-      applyFont(card.querySelector('.work-card-desc'), ap?.workDescFont);
-      applyFont(card.querySelector('.work-card-tag'), ap?.workTagFont);
+      if (!isHtml(w.title)) applyFont(card.querySelector('.work-card-title'), ap?.workTitleFont);
+      if (!isHtml(w.desc)) applyFont(card.querySelector('.work-card-desc'), ap?.workDescFont);
+      if (!isHtml(w.tag)) applyFont(card.querySelector('.work-card-tag'), ap?.workTagFont);
       applyFont(card.querySelector('.work-card-img span'), ap?.workTitleFont);
     });
   }
@@ -336,7 +352,7 @@
       div.className = 'footer-col';
 
       const h4 = document.createElement('h4');
-      h4.textContent = col.title;
+      setRich(h4, col.title, ap?.footerFont);
       div.appendChild(h4);
 
       const ul = document.createElement('ul');
@@ -344,20 +360,17 @@
         const li = document.createElement('li');
         const a = document.createElement('a');
         a.href = link.href;
-        a.textContent = link.label;
+        setRich(a, link.label, ap?.footerFont);
         if (link.href.startsWith('http')) a.target = '_blank';
         li.appendChild(a);
         ul.appendChild(li);
       });
       div.appendChild(ul);
-      applyFont(h4, ap?.footerFont);
-      applyFont(ul, ap?.footerFont);
       grid.appendChild(div);
     });
 
     const copyEl = document.getElementById('footer-copy');
-    copyEl.textContent = copy || '';
-    applyFont(copyEl, ap?.footerFont);
+    setRich(copyEl, copy, ap?.footerFont);
   }
 
   function esc(str) {
