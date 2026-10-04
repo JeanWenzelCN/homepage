@@ -17,6 +17,7 @@ const DEFAULT_CONFIG = {
   },
   appearance: {
     theme: 'dark',
+    showWorks: true,
     fonts: [],
     brandFont: '',
     heroNameFont: '',

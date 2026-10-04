@@ -63,6 +63,18 @@
   }
 
   // ===== 主视图 =====
+  function applyFavicon() {
+    let link = document.querySelector('link[rel="icon"]');
+    if (!link) {
+      link = document.createElement('link');
+      link.rel = 'icon';
+      link.type = 'image/svg+xml';
+      document.head.appendChild(link);
+    }
+    link.href = '/favicon.svg?v=' + Date.now();
+  }
+  applyFavicon();
+
   function showAdmin() {
     loginView.hidden = true;
     adminView.hidden = false;
@@ -84,7 +96,12 @@
   // ===== 填充 =====
   function populateAll() {
     document.querySelectorAll('[data-path]').forEach(el => {
-      el.value = getPath(config, el.dataset.path) ?? '';
+      if (el.type === 'checkbox') {
+        const v = getPath(config, el.dataset.path);
+        el.checked = v !== false;
+      } else {
+        el.value = getPath(config, el.dataset.path) ?? '';
+      }
     });
     renderNavEditor();
     renderSectionsEditor();
@@ -98,7 +115,7 @@
   // ===== 收集 =====
   function collectAll() {
     document.querySelectorAll('[data-path]').forEach(el => {
-      setPath(config, el.dataset.path, el.value);
+      setPath(config, el.dataset.path, el.type === 'checkbox' ? el.checked : el.value);
     });
     config.nav = collectNav();
     config.sections = collectSections();

@@ -96,7 +96,12 @@
     // Sections
     renderSections(cfg.sections || [], ap);
     // Works
-    renderWorks(cfg.works || [], ap);
+    if (ap.showWorks === false) {
+      const ws = document.getElementById('works-section');
+      if (ws) ws.style.display = 'none';
+    } else {
+      renderWorks(cfg.works || [], ap);
+    }
     // Footer
     renderFooter(cfg.footer || [], cfg.footerCopy, ap);
     // Animate sections on scroll
@@ -109,6 +114,9 @@
     // Theme
     const theme = appearance.theme || 'dark';
     document.documentElement.setAttribute('data-theme', theme);
+
+    // Favicon with cache-busting
+    applyFavicon();
 
     // Register custom fonts from /public/fonts/
     const fonts = appearance.fonts || [];
@@ -128,6 +136,19 @@
       `;
       document.head.appendChild(style);
     });
+  }
+
+  // Dynamic favicon with cache-busting query string
+  function applyFavicon() {
+    const ts = Date.now();
+    let link = document.querySelector('link[rel="icon"]');
+    if (!link) {
+      link = document.createElement('link');
+      link.rel = 'icon';
+      link.type = 'image/svg+xml';
+      document.head.appendChild(link);
+    }
+    link.href = '/favicon.svg?v=' + ts;
   }
 
   // Apply per-element font override via inline style

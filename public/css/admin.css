@@ -3,22 +3,21 @@
    ============================================ */
 
 :root {
-  --bg: #0f0f0f;
-  --bg-card: #1a1a1a;
+  /* 与主站 main.css 变量映射，保持后台与前台同一视觉体系 */
+  --bg: var(--bg-primary, #0f0f0f);
+  --bg-card: var(--bg-card, #1a1a1a);
   --bg-input: #222222;
-  --text: #e8e8e8;
-  --text-dim: #999;
-  --accent: #c8a96e;
+  --text: var(--text-primary, #e8e8e8);
+  --text-dim: var(--text-secondary, #999);
   --danger: #e05c5c;
   --success: #5ce08a;
-  --border: rgba(255,255,255,0.08);
   --radius: 6px;
 }
 
 *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
 
 body {
-  font-family: 'Inter', -apple-system, sans-serif;
+  font-family: var(--font-main, -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif);
   background: var(--bg);
   color: var(--text);
   min-height: 100vh;
@@ -109,6 +108,9 @@ body {
 }
 
 /* ===== BUTTONS ===== */
+.field-inline { display: flex; align-items: center; gap: 0.6rem; }
+.field-inline input[type="checkbox"] { width: 18px; height: 18px; accent-color: var(--accent); }
+.field-inline label { margin-bottom: 0 !important; }
 .btn {
   padding: 8px 20px;
   border-radius: var(--radius);
