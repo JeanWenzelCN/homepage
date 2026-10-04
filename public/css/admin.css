@@ -6,7 +6,7 @@
   /* 与主站 main.css 变量映射，保持后台与前台同一视觉体系 */
   --bg: var(--bg-primary, #0f0f0f);
   --bg-card: var(--bg-card, #1a1a1a);
-  --bg-input: #222222;
+  --bg-input: var(--bg-secondary, #222222);
   --text: var(--text-primary, #e8e8e8);
   --text-dim: var(--text-secondary, #999);
   --danger: #e05c5c;
